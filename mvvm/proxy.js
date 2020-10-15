@@ -21,6 +21,7 @@
     proxy1.message1 = 1;
     console.log(proxy1.message1); // hello
     console.log(proxy1.message2); // everyone
+    console.log('proxy1 and target', proxy1, target); // hello
 }
 console.log('-------');
 {
