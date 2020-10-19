@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .red {
+            color: red;
+        }
+        .size {
+            font-size: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="" id="app">
+        <li>1</li>
+        <p>4<span>56</span></p>
+        <hr>
+        <p v-text="hello" v-xx="xxx" v-on:click="xxx" v-class="size red"></p>
+        <p v-html="<h1>Hello world</h1>"></p>
+        <p>
+            <span v-text="hello"></span>
+        </p>
+        <p>{{ helloWrold }}</p>
+        <input type="text" v-model="input">
+        <p>{{ input }}</p>
+    </div>
+    <script src="./compile.js"></script>
+</body>
+</html>
