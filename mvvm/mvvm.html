@@ -13,16 +13,17 @@
       data: {
         message: 'hello'
       },
-      
       computed: {
         say() {
           console.log('hi', this.message)
         }
       }
     })
+    window.vm = vm
 
     vm.message = 'hello world'
     vm.say()
+
 
   </script>
 </body>

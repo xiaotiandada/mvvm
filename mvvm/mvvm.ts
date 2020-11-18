@@ -16,7 +16,7 @@ function MVVM(options: MvvmProps) {
   })
 
   this._initComputed()
-  
+
   observe(data)
 }
 
@@ -121,7 +121,7 @@ function observe(value: object): any {
   return new Observer(value)
 }
 
-let uid = 0
+let uid: number = 0
 
 function Dep() {
   this.id = uid++
