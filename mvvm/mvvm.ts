@@ -16,6 +16,8 @@ function MVVM(options: MvvmProps) {
   })
 
   this._initComputed()
+  
+  observe(data)
 }
 
 
@@ -61,3 +63,96 @@ MVVM.prototype = {
     console.log('me', this)
   }
 }
+
+// observe
+function Observer(data: object) {
+  this.data = data
+  this.walk(data)
+}
+
+
+Observer.prototype = {
+  constructor: Observer,
+  walk(data) {
+    Object.keys(data).forEach(key => {
+      this.convert(key, data[key])
+    })
+  },
+  convert(key, val) {
+    this.defineReactive(this.data, key, val)
+  },
+  defineReactive(data: object, key: string, val: any) {
+    console.log('defineReactive', data, key, val)
+    let dep = new Dep()
+    let childObj = observe(val)
+
+    Object.defineProperty(data, key, {
+      enumerable: true,
+      configurable: false,
+      get() {
+        console.log('observer get', val)
+        if (Dep.target) {
+          dep.depend()
+        }
+        return val
+      },
+      set(newVal) {
+        console.log('observer set', newVal)
+        if (newVal === val) {
+          return
+        }
+
+        val = newVal
+        // 如果新值是object 进行监听
+        childObj = observe(newVal)
+
+        dep.notify()
+      }
+    })
+  }
+}
+
+function observe(value: object): any {
+  console.log('observe', value)
+  if (!value || typeof value !== 'object') {
+    return
+  }
+
+  return new Observer(value)
+}
+
+let uid = 0
+
+function Dep() {
+  this.id = uid++
+  this.subs = []
+}
+
+Dep.prototype = {
+  constructor: Dep,
+  addSub(sub: unknown) {
+    console.log('addSub', sub)
+    this.subs.push(sub)
+  },
+  depend() {
+    console.log('depend', this)
+    // 调用别处的func
+    Dep.target.addDep(this)
+  },
+  removeSub(sub: unknown) {
+    console.log('removeSub', sub)
+    let index = this.subs.indexOf(sub)
+    if (index !== -1) {
+      this.subs.splice(index, 1)
+    }
+  },
+  notify() {
+    console.log('notify', this)
+
+    this.subs.forEach((sub: { update: Function }) => {
+      sub.update()
+    });
+  }
+}
+
+Dep.target = null
