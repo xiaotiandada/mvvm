@@ -4,18 +4,81 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
+  <style>
+
+    .red {
+      color: red;
+    }
+    .yellow {
+      color: yellow;
+    }
+
+    .fontsize {
+      font-size: 20px;
+    }
+
+  </style>
 </head>
 <body>
+  app before
+  <div id="app">
+    <ul>
+      <li><span>message：</span>{{ message }}</li>
+      <li><span>user: </span>{{ user.name }}</li>
+      <li><button v-on:click="eventFn">Click</button></li>
+      <li>
+        <span>html: </span>
+        <p v-html="htmlStr"></p>
+      </li>
+      <li>
+        <span>class: </span>
+        <span v-class="red">red</span>
+        <span v-class="yellow" class="fontsize">yellow</span>
+      </li>
+      <li>
+        <span>text: </span>
+        <span v-text="text"></span>
+      </li>
+      <li>
+        <span>other: </span>
+        <span v-xxxx="xxxx">xxx</span>
+      </li>
+      <li>
+        <span>model: </span>
+        <input type="text" v-model="model">
+        <span>{{ model }}</span>
+      </li>
+    </ul>
+  </div>
+  app after
   <script src="./mvvm.js"></script>
   <script>
 
     let vm = new MVVM({
+      el: '#app',
       data: {
-        message: 'hello'
+        message: 'hello',
+        user: {
+          name: 'xiao',
+          age: 21
+        },
+        htmlStr: "<h1>I'm H1</h1>", // 如果直接写在html目前解析不到 因为getVMVal取的this里面的变量 所以定义在data里
+        red: 'red', // 同 htmlStr
+        yellow: 'yellow', // 同 htmlStr
+        text: 'v-text', // 同 htmlStr
+        model: 'vue model', // 同 htmlStr
+        model1: {
+          a: ''
+        }, // 同 htmlStr
       },
       computed: {
         say() {
           console.log('hi', this.message)
+        }
+      },
+      methods: {
+        eventFn() {
+          console.log('hi')
         }
       }
     })
