@@ -79,6 +79,7 @@
       methods: {
         eventFn() {
           console.log('hi')
+          this.user.name = Date.now()
         }
       }
     })
@@ -87,6 +88,12 @@
     vm.message = 'hello world'
     vm.say()
 
+    vm.$watch('user.name', function() {
+        console.log('user.name', arguments);
+    })
+    vm.$watch('model', function() {
+        console.log('model', arguments);
+    })
 
   </script>
 </body>

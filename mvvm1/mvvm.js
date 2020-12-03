@@ -13,6 +13,10 @@ function MVVM(options) {
 }
 MVVM.prototype = {
     constructor: MVVM,
+    $watch: function (key, cb, options) {
+        // @ts-ignore
+        new Watcher(this, key, cb);
+    },
     // 添加一个属性代理的方法 使访问vm的属性代理为访问vm._data的属性
     _proxyData: function (key, setter, getter) {
         console.log('_proxyData', key, setter, getter);
@@ -68,6 +72,7 @@ Observer.prototype = {
     },
     defineReactive: function (data, key, val) {
         console.log('defineReactive', data, key, val);
+        // @ts-ignore
         var dep = new Dep();
         var childObj = observe(val);
         Object.defineProperty(data, key, {
@@ -98,6 +103,7 @@ function observe(value) {
     if (!value || typeof value !== 'object') {
         return;
     }
+    // @ts-ignore
     return new Observer(value);
 }
 var uid = 0;
@@ -126,10 +132,11 @@ Dep.prototype = {
     notify: function () {
         console.log('notify', this);
         this.subs.forEach(function (sub) {
-            sub.update();
+            sub.update(); // 调用订阅者的update方法，通知变化
         });
     }
 };
+// @ts-ignore
 Dep.target = null;
 // compile
 function Compile(el, vm) {
@@ -253,7 +260,11 @@ var compileUtil = {
         // console.log('bind', exp, dir)
         var updaterFn = updater[dir + 'Updater'];
         updaterFn && updaterFn(node, this._getVMVal(vm, exp));
-        // TODO
+        // @ts-ignore
+        new Watcher(vm, exp, function (value, oldValue) {
+            console.log('compile watcher');
+            updaterFn && updaterFn(node, value, oldValue);
+        });
     },
     // 事件处理
     eventHander: function (node, vm, exp, dir) {
@@ -303,5 +314,63 @@ var updater = {
     },
     modelUpdater: function (node, value) {
         node.value = typeof value == 'undefined' ? '' : value;
+    }
+};
+// watcher
+function Watcher(vm, expOrFn, cb) {
+    this.cb = cb;
+    this.vm = vm;
+    this.expOrFn = expOrFn;
+    this.depIds = {};
+    if (typeof expOrFn === 'function') {
+        this.getter = expOrFn;
+    }
+    else {
+        this.getter = this.parseGetter(expOrFn.trim());
+    }
+    // 此处为了触发属性的getter，从而在dep添加自己，结合Observer更易理解
+    this.value = this.get();
+}
+Watcher.prototype = {
+    constructor: Watcher,
+    update: function () {
+        console.log('Watcher update');
+        this.run(); // 属性值变化收到通知
+    },
+    run: function () {
+        console.log('Watcher run');
+        var value = this.get(); // 取到最新值
+        var oldVal = this.value;
+        if (value !== oldVal) {
+            this.value = value;
+            this.cb.call(this.vm, value, oldVal); // 执行Compile中绑定的回调，更新视图
+        }
+    },
+    addDep: function (dep) {
+        console.log('Watcher addDep');
+        if (!this.depIds.hasOwnProperty(dep.id)) {
+            dep.addSub(this);
+            this.depIds[dep.id] = dep;
+        }
+    },
+    get: function () {
+        console.log('Watcher get');
+        Dep.target = this; // 将当前订阅者指向自己
+        var value = this.getter.call(this.vm, this.vm); // 触发getter，添加自己到属性订阅器中
+        Dep.target = null; // 添加完毕，重置
+        return value;
+    },
+    parseGetter: function (exp) {
+        if (/[^\w.$]/.test(exp))
+            return;
+        var exps = exp.split('.');
+        return function (obj) {
+            for (var i = 0, len = exps.length; i < len; i++) {
+                if (!obj)
+                    return;
+                obj = obj[exps[i]];
+            }
+            return;
+        };
     }
 };
