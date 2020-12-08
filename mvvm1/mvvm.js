@@ -59,6 +59,7 @@ function observe(value) {
 }
 var uid = 0;
 // 消息订阅器 维护一个数组 用来收集订阅者 数据变化触动 notify 再调用订阅者的update方法
+// @ts-ignore
 function Dep() {
     this.id = uid++;
     this.subs = [];
