@@ -64,6 +64,8 @@ Dep.prototype = {
     },
 
     depend: function() {
+        console.log('depend', this)
+
         Dep.target.addDep(this);
     },
 

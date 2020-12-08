@@ -24,6 +24,7 @@ MVVM.prototype = {
 
     _proxyData: function(key, setter, getter) {
         var me = this;
+        console.log('meeeee', me)
         setter = setter || 
         Object.defineProperty(me, key, {
             configurable: false,

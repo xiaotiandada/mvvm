@@ -54,6 +54,9 @@ Compile.prototype = {
 
         [].slice.call(nodeAttrs).forEach(function(attr) {
             var attrName = attr.name;
+
+            console.log('thisssss', me.$vm)
+
             if (me.isDirective(attrName)) {
                 var exp = attr.value;
                 var dir = attrName.substring(2);
@@ -104,6 +107,8 @@ var compileUtil = {
     model: function(node, vm, exp) {
         this.bind(node, vm, exp, 'model');
 
+        console.log('11111', this)
+
         var me = this,
             val = this._getVMVal(vm, exp);
         node.addEventListener('input', function(e) {
@@ -122,6 +127,9 @@ var compileUtil = {
     },
 
     bind: function(node, vm, exp, dir) {
+
+        console.log('vmmmm', vm)
+
         var updaterFn = updater[dir + 'Updater'];
 
         updaterFn && updaterFn(node, this._getVMVal(vm, exp));
@@ -151,6 +159,7 @@ var compileUtil = {
     },
 
     _setVMVal: function(vm, exp, value) {
+        console.log('this', vm)
         var val = vm;
         exp = exp.split('.');
         exp.forEach(function(k, i) {

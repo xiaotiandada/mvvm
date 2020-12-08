@@ -20,7 +20,6 @@
   </style>
 </head>
 <body>
-  app before
   <div id="app">
     <ul>
       <li><span>message：</span>{{ message }}</li>
@@ -48,9 +47,13 @@
         <input type="text" v-model="model">
         <span>{{ model }}</span>
       </li>
+      <li>
+        <span>model: </span>
+        <input type="text" v-model="model1.a">
+        <span>{{ model1.a }}</span>
+      </li>
     </ul>
   </div>
-  app after
   <script src="./mvvm.js"></script>
   <script>
 
@@ -80,19 +83,17 @@
         eventFn() {
           console.log('hi')
           this.user.name = Date.now()
+          this.model = 'hhhh'
         }
       }
     })
     window.vm = vm
 
-    vm.message = 'hello world'
-    vm.say()
-
     vm.$watch('user.name', function() {
         console.log('user.name', arguments);
     })
     vm.$watch('model', function() {
-        console.log('model', arguments);
+        console.log('vm.$watch model', arguments);
     })
 
   </script>
