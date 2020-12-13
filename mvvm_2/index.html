@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    .red {
+      color: red;
+    }
+    .fs {
+      font-size: 20px;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="app">
+    <ul>
+      <li>
+        <input type="text" v-model="message">
+        {{ message }}
+      </li>
+      <li>
+        <input type="text" v-model="school.name">
+        {{ school.name }}{{ school.age }}
+      </li>
+      <li>
+        {{ sayName }}
+      </li>
+      <li><button v-on:click="change">Change</button></li>
+      <li v-html="html"></li>
+      <li v-class="class">red</li>
+      <li class="fs" v-class="class">red</li>
+    </ul>
+  </div>
+  <script src="./vue.js"></script>
+  <script>
+    let vm = new Vue({
+      el: '#app',
+      data: {
+        message: 'hello world',
+        school: {
+          name: 'xiao',
+          age: 18
+        },
+        html: '<h1>Hello</h1>',
+        class: 'red'
+      },
+      computed: {
+        sayName() {
+          return this.school.name + 'hhhh'
+        }
+      },
+      methods: {
+        change() {
+          this.school.name = 'vue event change name'
+        }
+      }
+    })
+
+    window.vm = vm
+  </script>
+</body>
+
+</html>
