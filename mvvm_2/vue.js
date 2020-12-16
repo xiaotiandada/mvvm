@@ -212,6 +212,11 @@ class Compiler {
       // RegExp.$1.trim() === {{ a }} 的 a
       CompileUtil.text(node, RegExp.$1.trim(), this.$vm)
     }
+
+    // content.replace(/\{\{(.+?)\}\}/g, (...args) => {
+    //   console.log(111, args[1].trim())
+    //   CompileUtil.text(node, args[1].trim(), this.$vm)
+    // })
   }
 
   // 把所有 node 移动到 fragment 里面
